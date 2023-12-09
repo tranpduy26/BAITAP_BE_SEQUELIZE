@@ -1,0 +1,232 @@
+
+
+CREATE DATABASE node36homeworksql;
+
+USE node36homeworksql;
+
+# ĐỀ BÀI:
+# - TÌM 5 NGƯỜI ĐÃ LIKE NHÀ HÀNG NHIỀU NHẤT
+# - TÌM 2 NHÀ HÀNG CÓ LƯỢT LIKE NHIỀU NHẤT
+# - TÌM NGƯỜI ĐÃ ĐẶT HÀNG NHIỀU NHẤT
+# - TÌM NGƯỜI DÙNG KHÔNG HOẠT ĐỘNG TRONG HỆ THỐNG (KHÔNG ĐẶT HÀNG, KHÔNG LIKE, KHÔNG ĐÁNH GIÁ NHÀ HÀNG)
+
+# TẠO CÁC TABLE
+
+CREATE TABLE users(
+	user_id INT PRIMARY KEY AUTO_INCREMENT,
+	full_name VARCHAR(50),
+	email VARCHAR (100),
+	user_password VARCHAR(50)
+);
+
+CREATE TABLE restaurant(
+	res_id INT PRIMARY KEY AUTO_INCREMENT,
+	res_name varchar(50),
+	image VARCHAR(100),
+	description VARCHAR(1000)
+);
+
+CREATE TABLE rate_res(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	user_id INT,
+	FOREIGN KEY (user_id) REFERENCES users(user_id),
+	res_id INT,
+	FOREIGN KEY (res_id) REFERENCES restaurant(res_id),
+	amount int,
+	date_rate date
+);
+
+CREATE TABLE like_res(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	user_id int,
+	FOREIGN KEY (user_id) REFERENCES users(user_id),
+	res_id int,
+	FOREIGN KEY (res_id) REFERENCES restaurant(res_id),
+	date_like date
+);
+
+
+CREATE TABLE food_type(
+	type_id INT PRIMARY KEY AUTO_INCREMENT,
+	type_name varchar(50)
+);
+
+CREATE TABLE food(
+	food_id INT PRIMARY KEY auto_increment,
+	food_name varchar(50),
+	image varchar(100),
+	price FLOAT,
+	description varchar(1000),
+	type_id INT,
+	FOREIGN KEY (type_id) REFERENCES food_type(type_id)
+);
+
+CREATE TABLE orders(
+	id INT PRIMARY KEY auto_increment,
+	user_id INT,
+	FOREIGN KEY (user_id) REFERENCES users(user_id),
+	food_id INT,
+	FOREIGN KEY (food_id) REFERENCES food(food_id),
+	amount INT,
+	ma_code varchar(50),
+	arr_sub_id varchar(100)
+);
+
+CREATE TABLE sub_food(
+	sub_id INT PRIMARY KEY AUTO_INCREMENT,
+	sub_name VARCHAR(100),
+	sub_price FLOAT,
+	food_id INT,
+	FOREIGN KEY (food_id) REFERENCES food(food_id)
+);
+
+# INSERT DATA VÀO TRONG CÁC TABLE
+# users
+INSERT INTO users (full_name, email, user_password) VALUES
+  ('John Doe', 'john.doe@email.com', 'password123'),
+  ('Jane Smith', 'jane.smith@email.com', 'securepass'),
+  ('Alice Johnson', 'alice.johnson@email.com', 'mypassword'),
+  ('Bob Williams', 'bob.williams@email.com', 'bob1234'),
+  ('Eva Davis', 'eva.davis@email.com', 'evapass'),
+  ('Michael Lee', 'michael.lee@email.com', 'mikepassword'),
+  ('Sarah Brown', 'sarah.brown@email.com', 'sarahpass'),
+  ('David Wilson', 'david.wilson@email.com', 'david123'),
+  ('Laura Taylor', 'laura.taylor@email.com', 'laurapass'),
+  ('Chris Anderson', 'chris.anderson@email.com', 'chris321'),
+  ('Alice Johnson', 'alice.johnson@email.com', 'mypassword'),
+  ('Bob Williams', 'bob.williams@email.com', 'bob1234'),
+  ('Alice Johnson', 'alice@email.com', 'alice1234'),
+  ('Bob Smith', 'bob@email.com', 'securepass');
+
+#restaurant
+INSERT INTO restaurant (res_name, image, description) VALUES
+  ('The Bistro', 'bistro.jpg', 'A cozy restaurant with a diverse menu offering a variety of cuisines.'),
+  ('Mama Mia Pizzeria', 'pizza.jpg', 'Authentic Italian pizza and pasta dishes with a family-friendly atmosphere.'),
+  ('Sushi Delight', 'sushi.jpg', 'Fresh and delicious sushi rolls, sashimi, and Japanese cuisine.'),
+  ('Café de Paris', 'cafe.jpg', 'A charming café known for its pastries, coffee, and French ambiance.'),
+  ('Spice of India', 'indian.jpg', 'Serving a range of Indian dishes with bold flavors and spices.'),
+  ('Sunset Grill', 'grill.jpg', 'A grill restaurant offering steaks, seafood, and an outdoor patio with sunset views.'),
+  ('Thai Orchid', 'thai.jpg', 'Experience the tastes of Thailand with our authentic Thai dishes.'),
+  ('Burger Haven', 'burger.jpg', 'A burger joint with a variety of gourmet burgers and fries.'),
+  ('Mediterranean Oasis', 'mediterranean.jpg', 'Mediterranean cuisine featuring falafel, kebabs, and more.'),
+  ('Seafood Harbor', 'seafood.jpg', 'Fresh seafood and shellfish in a maritime-inspired setting.');
+
+# rate_res
+INSERT INTO rate_res (user_id, res_id, amount, date_rate) VALUES
+  (1, 1, 4, '2023-10-01'),
+  (2, 3, 5, '2023-10-02'),
+  (3, 6, 3, '2023-10-03'),
+  (4, 2, 4, '2023-10-04'),
+  (5, 7, 5, '2023-10-05'),
+  (6, 9, 4, '2023-10-06'),
+  (7, 5, 3, '2023-10-07'),
+  (8, 8, 5, '2023-10-08'),
+  (9, 4, 4, '2023-10-09'),
+  (10, 10, 3, '2023-10-10'),
+  (12, 4, 2, '2023-10-12');
+
+# like_res
+INSERT INTO like_res (user_id, res_id, date_like) VALUES
+  (1, 1, '2023-10-01'),
+  (2, 3, '2023-10-02'),
+  (3, 6, '2023-10-03'),
+  (4, 2, '2023-10-04'),
+  (5, 7, '2023-10-05'),
+  (6, 9, '2023-10-06'),
+  (7, 5, '2023-10-07'),
+  (8, 8, '2023-10-08'),
+  (9, 4, '2023-10-09'),
+  (10, 10, '2023-10-10'),
+  (1, 3, '2023-10-01'),
+  (2, 5, '2023-10-02'),
+  (3, 7, '2023-10-03'),
+  (4, 6, '2023-10-04'),
+  (5, 10, '2023-10-05'),
+  (1, 10, '2023-10-01'),
+  (2, 6, '2023-10-11'),
+  (3, 9, '2023-10-12'),
+  (4, 2, '2023-10-04'),
+  (1, 7, '2023-10-01'),
+  (2, 9, '2023-10-02'),
+  (3, 2, '2023-10-03'),
+  (1, 9, '2023-10-04'),
+  (2, 2, '2023-10-01'),
+  (1, 8, '2023-10-02'),
+  (11, 2, '2023-10-23');
+
+# food_type
+INSERT INTO food_type (type_name) VALUES
+  ('Italian'),
+  ('Japanese'),
+  ('Mexican'),
+  ('Indian'),
+  ('Thai'),
+  ('American'),
+  ('Mediterranean'),
+  ('Chinese'),
+  ('Vegetarian'),
+  ('Seafood');
+
+# food
+INSERT INTO food (food_name, image, price, description, type_id) VALUES
+  ('Margherita Pizza', 'margherita.jpg', 10.99, 'Classic pizza with tomato, mozzarella, and basil.', 1),
+  ('Sashimi Platter', 'sashimi.jpg', 18.99, 'Assortment of fresh sashimi slices.', 2),
+  ('Taco Trio', 'taco.jpg', 8.99, 'Three delicious tacos with your choice of fillings.', 3),
+  ('Chicken Tikka Masala', 'tikka.jpg', 12.99, 'Spicy Indian chicken dish with tomato-based sauce.', 4),
+  ('Pad Thai Noodles', 'padthai.jpg', 9.99, 'Stir-fried Thai noodles with peanuts and lime.', 5),
+  ('Bacon Cheeseburger', 'burger.jpg', 7.99, 'A classic American burger with bacon and cheese.', 6),
+  ('Falafel Wrap', 'falafel.jpg', 6.99, 'Mediterranean-style wrap with falafel and veggies.', 7),
+  ('General Tso Chicken', 'generaltso.jpg', 11.99, 'Sweet and spicy Chinese chicken dish.', 8),
+  ('Vegetable Curry', 'curry.jpg', 10.99, 'A flavorful vegetarian curry with assorted veggies.', 9),
+  ('Seafood Paella', 'paella.jpg', 16.99, 'A Spanish dish with rice, saffron, and assorted seafood.', 10);
+
+# orders
+INSERT INTO orders (user_id, food_id, amount, ma_code, arr_sub_id) VALUES
+  (1, 1, 2, 'ORDER123', 'SUB123'),
+  (2, 3, 1, 'ORDER456', 'SUB456'),
+  (3, 6, 3, 'ORDER789', 'SUB789'),
+  (4, 2, 2, 'ORDER234', 'SUB234'),
+  (5, 7, 2, 'ORDER567', 'SUB567'),
+  (6, 9, 1, 'ORDER890', 'SUB890'),
+  (7, 5, 2, 'ORDER345', 'SUB345'),
+  (8, 8, 2, 'ORDER678', 'SUB678'),
+  (9, 4, 1, 'ORDER012', 'SUB012'),
+  (10, 10, 2, 'ORDER111', 'SUB111'),
+  (1, 2, 2, 'ORDER124', 'SUB12345'),
+  (2, 3, 3, 'ORDER345', 'SUB67890'),
+  (3, 6, 1, 'ORDER789', 'SUB23456'),
+  (1, 2, 4, 'ORDER120', 'SUB78901'),
+  (1, 7, 2, 'ORDER365', 'SUB34567'),
+  (14, 2, 5, 'ORDER125', 'SUB14205');
+
+# sub_food
+INSERT INTO sub_food (sub_name, sub_price, food_id) VALUES
+  ('Garlic Bread', 3.99, 1),
+  ('Miso Soup', 2.49, 2),
+  ('Guacamole', 4.99, 3),
+  ('Naan Bread', 2.99, 4),
+  ('Spring Rolls', 3.49, 5),
+  ('Onion Rings', 4.99, 6),
+  ('Tzatziki', 3.99, 7),
+  ('Egg Roll', 2.49, 8),
+  ('Hummus', 4.49, 9),
+  ('Ceviche', 5.99, 10);
+
+
+# a) Tìm 5 người đã like nhà hàng nhiều nhất
+SELECT users.user_id, full_name FROM users INNER JOIN like_res ON users.user_id = like_res.user_id GROUP BY users.user_id ORDER BY COUNT(users.user_id) DESC LIMIT 5;
+
+# b) Tìm 2 nhà hàng có lượt like nhiều nhất
+-- SELECT * FROM restaurant INNER JOIN like_res ON like_res.res_id = restaurant.res_id;
+SELECT restaurant.res_id, res_name FROM restaurant INNER JOIN like_res ON like_res.res_id = restaurant.res_id GROUP BY restaurant.res_id ORDER BY COUNT(restaurant.res_id) DESC LIMIT 2;
+
+# c) Tìm người đã đặt hàng nhiều nhất
+-- SELECT * FROM users INNER JOIN orders ON users.user_id = orders.user_id;
+SELECT users.user_id, full_name FROM users INNER JOIN orders ON users.user_id = orders.user_id GROUP BY users.user_id ORDER BY COUNT(users.user_id) DESC LIMIT 1;
+
+# d) Tìm người dùng không hoạt động trong hệ thống (không đặt hàng, không like, không đánh giá nhà hàng)
+CREATE TABLE user_not_rate SELECT users.user_id, full_name FROM users LEFT JOIN rate_res ON users.user_id = rate_res.user_id WHERE rate_res.user_id IS NULL;
+CREATE TABLE user_not_like_and_rate SELECT user_not_rate.user_id, user_not_rate.full_name FROM user_not_rate LEFT JOIN like_res ON user_not_rate.user_id = like_res.user_id WHERE like_res.user_id IS NULL;
+
+	# SELECT NGƯỜI DÙNG KHÔNG HOẠT ĐỘNG TRONG HỆ THỐNG 
+SELECT user_not_like_and_rate.full_name FROM orders RIGHT JOIN user_not_like_and_rate ON user_not_like_and_rate.user_id = orders.user_id WHERE orders.user_id IS NULL;
